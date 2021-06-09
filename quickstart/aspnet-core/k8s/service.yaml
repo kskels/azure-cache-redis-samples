@@ -5,7 +5,6 @@ metadata:
     app: aspnet-core-app
   name: aspnet-core-app
 spec:
-  type: NodePort
   ports:
     - name: 8080-tcp
       port: 8080
