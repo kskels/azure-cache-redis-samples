@@ -1,0 +1,91 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: build-and-deploy
+spec:
+  workspaces:
+  - name: shared-workspace
+  params:
+  - name: deployment-name
+    type: string
+    description: name of the deployment to be patched
+  - name: git-url
+    type: string
+    description: url of the git repo for the code of deployment
+  - name: git-revision
+    type: string
+    description: revision to be used from repo of the code for deployment
+    default: "main"
+  - name: IMAGE
+    type: string
+    description: IMAGE to be build from the code
+  tasks:
+  - name: fetch-repository
+    taskRef:
+      name: git-clone
+      kind: ClusterTask
+    workspaces:
+    - name: output
+      workspace: shared-workspace
+    params:
+    - name: url
+      value: $(params.git-url)
+    - name: subdirectory
+      value: ""
+    - name: deleteExisting
+      value: "true"
+    - name: revision
+      value: $(params.git-revision)
+
+  - name: dotnet-build
+    taskRef:
+      name: dotnet-build
+      kind: Task
+    params:
+    - name: source_dir
+      value: quickstart/aspnet-core/ContosoTeamStats
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+    runAfter:
+    - fetch-repository
+
+  - name: build-image
+    taskRef:
+      name: buildah
+      kind: ClusterTask
+    params:
+    - name: IMAGE
+      value: $(params.IMAGE)
+    - name: DOCKERFILE
+      value: Dockerfile.bin
+    - name: CONTEXT
+      value: quickstart/aspnet-core
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+    runAfter:
+    - dotnet-build
+
+
+  - name: apply-manifests
+    taskRef:
+      name: apply-manifests
+    params:
+    - name: manifest_dir
+      value: quickstart/aspnet-core/k8s
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+    runAfter:
+    - build-image
+  - name: update-deployment
+    taskRef:
+      name: update-deployment
+    params:
+    - name: deployment
+      value: $(params.deployment-name)
+    - name: IMAGE
+      value: $(params.IMAGE)@$(tasks.build-image.results.IMAGE_DIGEST)
+    runAfter:
+    - apply-manifests
