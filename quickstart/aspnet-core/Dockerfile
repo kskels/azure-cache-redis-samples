@@ -1,4 +1,4 @@
-FROM registry.redhat.io/rhel8/dotnet-50
+FROM registry.access.redhat.com/ubi8/dotnet-50
 
 USER 0
 
