@@ -12,7 +12,7 @@ spec:
       default: "."
   steps:
     - name: publish
-      image: registry.access.redhat.com/ubi8/dotnet-50
+      image: registry.redhat.io/ubi8/dotnet-50
       workingDir: /workspace/source
       command: ["/bin/bash", "-c"]
       args:
