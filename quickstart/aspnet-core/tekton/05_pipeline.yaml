@@ -36,6 +36,8 @@ spec:
       value: "true"
     - name: revision
       value: $(params.git-revision)
+    - name: sslVerify
+      value: "false"
 
   - name: dotnet-build
     taskRef:
