@@ -1,10 +1,11 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: build-and-deploy
+  name: dotnet-docker-build-and-deploy
 spec:
   workspaces:
   - name: shared-workspace
+
   params:
   - name: deployment-name
     type: string
@@ -19,6 +20,7 @@ spec:
   - name: IMAGE
     type: string
     description: IMAGE to be build from the code
+
   tasks:
   - name: fetch-repository
     taskRef:
@@ -69,7 +71,6 @@ spec:
     runAfter:
     - dotnet-build
 
-
   - name: apply-manifests
     taskRef:
       name: apply-manifests
@@ -81,6 +82,7 @@ spec:
       workspace: shared-workspace
     runAfter:
     - build-image
+
   - name: update-deployment
     taskRef:
       name: update-deployment
