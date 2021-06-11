@@ -1,0 +1,59 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: dotnet-s2i-build
+spec:
+
+  workspaces:
+  - name: shared-workspace
+
+  params:
+  - name: git-url
+    type: string
+    description: url of the git repo for the code
+  - name: git-revision
+    type: string
+    description: revision to be used from repo of the code
+    default: "main"
+  - name: image
+    type: string
+    description: image to be build from the code
+
+  tasks:
+  - name: fetch-repository
+    taskRef:
+      name: git-clone
+      kind: ClusterTask
+    workspaces:
+    - name: output
+      workspace: shared-workspace
+    params:
+    - name: url
+      value: $(params.git-url)
+    - name: subdirectory
+      value: ""
+    - name: deleteExisting
+      value: "true"
+    - name: revision
+      value: $(params.git-revision)
+    - name: sslVerify
+      value: "false"
+
+  - name: dotnet-build
+    taskRef:
+      name: s2i-dotnet
+      kind: ClusterTask
+    params:
+    - name: TLSVERIFY
+      value: "false"
+    - name: image
+      value: $(params.image)
+    - name: PATH_CONTEXT
+      value: "quickstart/aspnet-core/ContosoTeamStats"
+    - name: VERSION
+      value: "5.0-ubi8"
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+    runAfter:
+    - fetch-repository
