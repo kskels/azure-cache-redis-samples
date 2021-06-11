@@ -1,10 +1,9 @@
-FROM registry.redhat.io/ubi8/dotnet-50
+FROM registry.redhat.io/ubi8/dotnet-50-runtime
 
 USER 0
 
-COPY ContosoTeamStats /tmp/src
-RUN chown -R 1001:0 /tmp/src
+COPY ContosoTeamStats/bin /opt/app-root/app
+RUN chown -R 1001:0 /opt/app-root/app
 
 USER 1001
-RUN /usr/libexec/s2i/assemble
-CMD /usr/libexec/s2i/run
+CMD dotnet /opt/app-root/app/Release/net5.0/ContosoTeamStats.dll
