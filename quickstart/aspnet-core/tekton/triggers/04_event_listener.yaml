@@ -1,0 +1,8 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: aspnet-core-app
+spec:
+  serviceAccountName: pipeline
+  triggers:
+    - triggerRef: aspnet-core-app-trigger

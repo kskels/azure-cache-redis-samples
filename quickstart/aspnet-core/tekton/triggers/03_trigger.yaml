@@ -1,0 +1,10 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: aspnet-core-app-trigger
+spec:
+  serviceAccountName: pipeline
+  bindings:
+    - ref: aspnet-core-app
+  template:
+    ref: aspnet-core-app

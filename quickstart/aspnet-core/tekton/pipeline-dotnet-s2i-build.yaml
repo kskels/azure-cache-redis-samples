@@ -46,7 +46,7 @@ spec:
     params:
     - name: TLSVERIFY
       value: "false"
-    - name: image
+    - name: IMAGE
       value: $(params.image)
     - name: PATH_CONTEXT
       value: "quickstart/aspnet-core/ContosoTeamStats"

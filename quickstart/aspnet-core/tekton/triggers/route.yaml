@@ -1,0 +1,15 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: el-aspnet-core-app
+  name: el-aspnet-core-app
+spec:
+  port:
+    targetPort: http-listener
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: el-aspnet-core-app
