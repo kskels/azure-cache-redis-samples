@@ -1,0 +1,80 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: dotnet-build-and-publish
+spec:
+  workspaces:
+    - name: source
+  params:
+    - name: source_dir
+      description: Location of image to be patched with
+      type: string
+      default: "."
+
+  results:
+  - description: URL to the Artifactory binary archive
+    name: PUBLISH_ARCHIVE_NAME
+
+  steps:
+    - name: build
+      image: registry.redhat.io/ubi8/dotnet-50
+      workingDir: /workspace/source
+      command: ["/bin/bash", "-c"]
+      args:
+        - |-
+          cd $(inputs.params.source_dir)/ContosoTeamStats
+          dotnet publish -c Release
+
+          cd bin/Release/net5.0
+          tar czf publish.tar.gz publish
+
+    - name: publish
+      image: registry.redhat.io/ubi8/ubi
+      workingDir: /workspace/source
+
+      env:
+        - name: SECRET_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: artifactory-secret
+              key: username
+        - name: SECRET_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: artifactory-secret
+              key: password
+        - name: SECRET_URL
+          valueFrom:
+            secretKeyRef:
+              name: artifactory-secret
+              key: url
+
+      command: ["/bin/bash", "-c"]
+      args:
+        - |-
+          cd $(inputs.params.source_dir)/ContosoTeamStats/bin/Release/net5.0
+
+          ARTIFACT_MD5_CHECKSUM=$(md5sum publish.tar.gz | awk '{print $1}')
+          ARTIFACT_SHA1_CHECKSUM=$(sha1sum publish.tar.gz | awk '{ print $1 }')
+          ARTIFACT_SHA256_CHECKSUM=$(sha256sum publish.tar.gz | awk '{ print $1 }')
+
+          BIN_ARCHIVE_NAME="publish-${ARTIFACT_MD5_CHECKSUM}.tar.gz"
+          BIN_ARCHIVE_URL="${SECRET_URL}/artifactory/aspnet-core-artifacts/ContosoTeamStats/${BIN_ARCHIVE_NAME}"
+
+          mv publish.tar.gz $BIN_ARCHIVE_NAME
+
+          curl -k -u "${SECRET_USERNAME}:${SECRET_PASSWORD}" \
+            --header "X-Checksum-MD5:${ARTIFACT_MD5_CHECKSUM}" \
+            --header "X-Checksum-Sha1:${ARTIFACT_SHA1_CHECKSUM}" \
+            --header "X-Checksum-Sha256:${ARTIFACT_SHA256_CHECKSUM}" \
+            --upload-file $BIN_ARCHIVE_NAME $BIN_ARCHIVE_URL
+
+          echo -n ${BIN_ARCHIVE_NAME} | tee /tekton/results/PUBLISH_ARCHIVE_NAME
+
+    - name: cleanup
+      image: registry.redhat.io/ubi8/ubi
+      workingDir: /workspace/source
+      command: ["/bin/bash", "-c"]
+      args:
+        - |-
+          rm -rf $(inputs.params.source_dir)/ContosoTeamStats/bin
