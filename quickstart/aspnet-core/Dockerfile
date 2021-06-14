@@ -1,9 +1,10 @@
-FROM registry.redhat.io/ubi8/dotnet-50-runtime
+FROM registry.redhat.io/ubi8/dotnet-50
 
 USER 0
 
-COPY publish /opt/app-root/app
-RUN chown -R 1001:0 /opt/app-root/app
+COPY ContosoTeamStats /tmp/src
+RUN chown -R 1001:0 /tmp/src
 
 USER 1001
-CMD /opt/app-root/app/ContosoTeamStats
+RUN /usr/libexec/s2i/assemble
+CMD /usr/libexec/s2i/run

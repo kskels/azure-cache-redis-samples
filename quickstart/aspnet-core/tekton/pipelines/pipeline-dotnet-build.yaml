@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: dotnet-docker-build-and-deploy
+  name: dotnet-build-and-deploy
 spec:
   workspaces:
   - name: shared-workspace
@@ -41,9 +41,9 @@ spec:
     - name: sslVerify
       value: "false"
 
-  - name: dotnet-build-and-publish
+  - name: dotnet-build
     taskRef:
-      name: dotnet-build-and-publish
+      name: dotnet-build
       kind: Task
     params:
     - name: source_dir
@@ -53,21 +53,6 @@ spec:
       workspace: shared-workspace
     runAfter:
     - fetch-repository
-
-  - name: get-archive
-    taskRef:
-      name: get-archive
-      kind: Task
-    params:
-    - name: source_dir
-      value: quickstart/aspnet-core
-    - name: url
-      value: $(tasks.dotnet-build-and-publish.results.PUBLISH_ARCHIVE_NAME)
-    workspaces:
-    - name: source
-      workspace: shared-workspace
-    runAfter:
-    - dotnet-build-and-publish
 
   - name: build-image
     taskRef:
@@ -84,7 +69,7 @@ spec:
     - name: source
       workspace: shared-workspace
     runAfter:
-    - get-archive
+    - dotnet-build
 
   - name: apply-manifests
     taskRef:

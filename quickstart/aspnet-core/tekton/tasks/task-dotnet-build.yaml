@@ -1,0 +1,26 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: dotnet-build
+spec:
+  workspaces:
+    - name: source
+  params:
+    - name: source_dir
+      description: Location of image to be patched with
+      type: string
+      default: "."
+
+  results:
+  - description: URL to the Artifactory binary archive
+    name: PUBLISH_ARCHIVE_NAME
+
+  steps:
+    - name: build
+      image: registry.redhat.io/ubi8/dotnet-50
+      workingDir: /workspace/source
+      command: ["/bin/bash", "-c"]
+      args:
+        - |-
+          cd $(inputs.params.source_dir)/ContosoTeamStats
+          dotnet publish -c Release -o ../publish
