@@ -1,6 +1,6 @@
 
 oc new-project dotnet-apps
-oc new-app --name aspnet-core-redis-6 --docker-image=registry.redhat.io/rhel8/redis-6
+oc new-app --name aspnet-core-redis --docker-image=registry.redhat.io/rhel8/redis-6
 
 # docker
 oc new-build --name aspnet-core-app \
@@ -10,8 +10,8 @@ oc new-build --name aspnet-core-app \
 
 # s2i
 oc new-build --name aspnet-core-app \
-  --context-dir quickstart/aspnet-core \
-  https://github.com/kskels/azure-cache-redis-samples.git
+  --context-dir quickstart/aspnet-core/ContosoTeamStats \
+  openshift/dotnet:5.0-ubi8~https://github.com/kskels/azure-cache-redis-samples.git
 
 # binary
 oc new-build --binary --strategy docker --name aspnet-core-app 

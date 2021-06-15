@@ -2,22 +2,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: aspnet-core-redis-6
-  name: aspnet-core-redis-6
+    app: aspnet-core-redis
+  name: aspnet-core-redis
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: aspnet-core-redis-6
+      app: aspnet-core-redis
   template:
     metadata:
       labels:
-        app: aspnet-core-redis-6
+        app: aspnet-core-redis
     spec:
       containers:
         - image: registry.redhat.io/rhel8/redis-6
           imagePullPolicy: Always
-          name: aspnet-core-redis-6
+          name: aspnet-core-redis
           ports:
             - containerPort: 6379
               protocol: TCP
