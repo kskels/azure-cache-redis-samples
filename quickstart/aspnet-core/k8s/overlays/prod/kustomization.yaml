@@ -6,7 +6,7 @@ bases:
 
 images:
 - name: quay.io/kskels/aspnet-core-app
-  newTag: v1.0
+  newTag: v1.1
 namespace: dotnet-apps-prod
 
 
