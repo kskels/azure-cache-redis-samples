@@ -17,7 +17,7 @@ spec:
     spec:
       serviceAccountName: pipeline
       pipelineRef:
-        name: dotnet-docker-build-and-deploy
+        name: dotnet-build-and-deploy
       params:
       - name: deployment-name
         value: aspnet-core-app
