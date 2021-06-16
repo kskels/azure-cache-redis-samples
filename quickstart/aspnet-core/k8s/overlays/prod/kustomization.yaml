@@ -6,7 +6,7 @@ bases:
 
 images:
 - name: quay.io/kskels/aspnet-core-app
-  newTag: quay.io/kskels/aspnet-core-app:v1.0
+  newTag: v1.0
 namespace: dotnet-gitops-prod
 
 
