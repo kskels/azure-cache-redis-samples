@@ -26,7 +26,7 @@ spec:
       - name: git-revision
         value: $(tt.params.git-revision)
       - name: IMAGE
-        value: image-registry.openshift-image-registry.svc:5000/dotnet-demo/aspnet-core-app
+        value: image-registry.openshift-image-registry.svc:5000/dotnet-apps-dev/aspnet-core-app
       workspaces:
       - name: shared-workspace
         volumeClaimTemplate:

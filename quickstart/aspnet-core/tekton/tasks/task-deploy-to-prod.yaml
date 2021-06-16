@@ -1,0 +1,54 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: deploy-to-prod
+spec:
+  workspaces:
+  - name: source
+  params:
+    - name: manifest_dir
+      description: Location of image to be patched with
+      type: string
+    - name: deployment
+      description: Location of image to be patched with
+      type: string
+    - name: image
+      description: Location of image to be patched with
+      type: string
+    - name: digest
+      description: Name of the image tag
+      type: string
+    - name: namespace
+      description: Name of the image tag
+      type: string
+
+  steps:
+    - name: patch
+      image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+      workingDir: /workspace/source
+      command: ["/bin/bash", "-c"]
+      args:
+        - |-
+
+          cd $(inputs.params.manifest_dir) 
+
+          cat <<EOF >./kustomization.yaml
+          resources:
+          - aspnet-core-app-deployment.yaml
+          - aspnet-core-app-route.yaml
+          - aspnet-core-app-service.yaml
+          - redis-deployment.yaml
+          - redis-service.yaml
+          images:
+          - name: quay.io/kskels/aspnet-core-app
+            newName: $(inputs.params.image)
+            digest: $(inputs.params.digest)
+          namespace: $(inputs.params.namespace)
+          EOF
+
+          oc kustomize .
+          cat kustomization.yaml
+
+          oc apply -k .
+          oc rollout status deploy/$(inputs.params.deployment)
+

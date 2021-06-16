@@ -93,3 +93,23 @@ spec:
       value: $(params.IMAGE)@$(tasks.build-image.results.IMAGE_DIGEST)
     runAfter:
     - apply-manifests
+
+  - name: deploy-to-prod
+    taskRef:
+      name: deploy-to-prod
+    params:
+    - name: manifest_dir
+      value: quickstart/aspnet-core/k8s
+    - name: deployment
+      value: $(params.deployment-name)
+    - name: image
+      value: $(params.IMAGE)
+    - name: digest
+      value: $(tasks.build-image.results.IMAGE_DIGEST)
+    - name: namespace
+      value: dotnet-apps-prod
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+    runAfter:
+    - update-deployment
