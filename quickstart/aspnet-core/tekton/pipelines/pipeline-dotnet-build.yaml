@@ -76,7 +76,7 @@ spec:
       name: apply-manifests
     params:
     - name: manifest_dir
-      value: quickstart/aspnet-core/k8s
+      value: quickstart/aspnet-core/k8s/base
     workspaces:
     - name: source
       workspace: shared-workspace
@@ -99,7 +99,7 @@ spec:
       name: deploy-to-prod
     params:
     - name: manifest_dir
-      value: quickstart/aspnet-core/k8s
+      value: quickstart/aspnet-core/k8s/base
     - name: deployment
       value: $(params.deployment-name)
     - name: image
