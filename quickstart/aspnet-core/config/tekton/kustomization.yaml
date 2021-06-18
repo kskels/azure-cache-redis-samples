@@ -8,3 +8,9 @@ resources:
 - tasks/task-dotnet-build.yaml
 - tasks/task-get-archive.yaml
 - tasks/task-update-deployment.yaml
+
+- triggers/event-listener-route.yaml
+- triggers/event-listener.yaml
+- triggers/trigger-binding.yaml
+- triggers/trigger-template.yaml
+- triggers/trigger.yaml
