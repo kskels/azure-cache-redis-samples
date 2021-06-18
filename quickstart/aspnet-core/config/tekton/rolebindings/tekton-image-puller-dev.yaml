@@ -1,14 +1,14 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: tekton-allow-prod-deployments
-  namespace: dotnet-apps-prod
+  name: tekton-image-puller-dev
+  namespace: dotnet-dev
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: admin
+  name: system:image-puller
 subjects:
 - kind: ServiceAccount
-  name: pipeline
-  namespace: dotnet-apps-dev
+  name: default
+  namespace: dotnet-cicd
 

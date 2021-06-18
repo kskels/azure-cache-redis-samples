@@ -1,6 +1,13 @@
 resources:
-- dotnet-cicd-ns.yaml
+- namespaces/dotnet-cicd.yaml
+- namespaces/dotnet-dev.yaml
+- namespaces/dotnet-prod.yaml
+
 - rolebindings/argocd-admin.yaml
+- rolebindings/tekton-admin-dev.yaml
+- rolebindings/tekton-admin-prod.yaml
+- rolebindings/tekton-image-puller-dev.yaml
+- rolebindings/tekton-image-puller-prod.yaml
 
 - tasks/task-apply-manifests.yaml
 - tasks/task-deploy-to-prod.yaml
@@ -8,6 +15,8 @@ resources:
 - tasks/task-dotnet-build.yaml
 - tasks/task-get-archive.yaml
 - tasks/task-update-deployment.yaml
+
+- pipelines/pipeline-dotnet-build.yaml
 
 - triggers/event-listener-route.yaml
 - triggers/event-listener.yaml
