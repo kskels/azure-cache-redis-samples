@@ -1,5 +1,6 @@
 resources:
 - dotnet-cicd-ns.yaml
+- rolebindings/argocd-admin.yaml
 
 - tasks/task-apply-manifests.yaml
 - tasks/task-deploy-to-prod.yaml
