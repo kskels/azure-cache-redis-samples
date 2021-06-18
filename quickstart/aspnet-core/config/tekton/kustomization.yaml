@@ -1,9 +1,9 @@
 resources:
 - dotnet-cicd-ns.yaml
 
-- task-apply-manifests.yaml
-- task-deploy-to-prod.yaml
-- task-dotnet-build-and-publish.yaml
-- task-dotnet-build.yaml
-- task-get-archive.yaml
-- task-update-deployment.yaml
+- tasks/task-apply-manifests.yaml
+- tasks/task-deploy-to-prod.yaml
+- tasks/task-dotnet-build-and-publish.yaml
+- tasks/task-dotnet-build.yaml
+- tasks/task-get-archive.yaml
+- tasks/task-update-deployment.yaml
