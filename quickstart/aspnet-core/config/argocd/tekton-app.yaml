@@ -35,7 +35,7 @@ spec:
     kind: SealedSecret
   project: default
   source:
-    path: config/tekton
+    path: quickstart/aspnet-core/config/tekton
     repoURL: https://github.com/kskels/azure-cache-redis-samples.git
   syncPolicy:
     automated:
