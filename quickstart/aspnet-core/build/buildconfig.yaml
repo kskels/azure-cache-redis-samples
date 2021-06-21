@@ -1,0 +1,25 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: aspnet-core-app
+  labels:
+    build: aspnet-core-app
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: aspnet-core-app:latest
+  source:
+    contextDir: quickstart/aspnet-core
+    git:
+      ref: main
+      uri: https://github.com/kskels/azure-cache-redis-samples.git
+    type: Git
+    secrets:
+    - destinationDir: artifactory-auth
+      secret:
+        name: artifactory-auth
+  strategy:
+    dockerStrategy:
+      dockerfilePath: Dockerfile.secrets
+    type: Docker
