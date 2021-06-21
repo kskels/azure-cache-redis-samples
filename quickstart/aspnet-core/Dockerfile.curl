@@ -1,0 +1,8 @@
+FROM registry.redhat.io/ubi8/dotnet-50
+
+RUN cd /tmp && curl -k -O https://artifactory-artifactory-nginx-jfrog.apps.ocp4.kskels.com/artifactory/aspnet-core-artifacts/ContosoTeamStats/publish.tar.gz && tar -xzf publish.tar.gz && rm -rf publish.tar.gz
+
+RUN mv /tmp/publish/* /opt/app-root/app
+
+WORKDIR /opt/app-root/app
+CMD /opt/app-root/app/ContosoTeamStats
