@@ -21,5 +21,5 @@ spec:
         name: artifactory-auth
   strategy:
     dockerStrategy:
-      dockerfilePath: Dockerfile.secrets
+      dockerfilePath: Dockerfile.secret
     type: Docker
