@@ -1,4 +1,4 @@
-FROM registry.redhat.io/ubi8/dotnet-50
+FROM registry.redhat.io/ubi8/dotnet-50-runtime
 
 RUN cd /tmp && curl -k -O https://artifactory-artifactory-nginx-jfrog.apps.ocp4.kskels.com/artifactory/aspnet-core-artifacts/ContosoTeamStats/publish.tar.gz && tar -xzf publish.tar.gz && rm -rf publish.tar.gz
 
