@@ -1,30 +1,37 @@
+# App Deployment
 
+```bash
 oc new-project dotnet-apps-dev
-
-# redis
 oc new-app --name aspnet-core-redis --docker-image=registry.redhat.io/rhel8/redis-6
+```
 
 # docker
+```bash
 oc new-build --name aspnet-core-app \
   --strategy=docker \
   --context-dir quickstart/aspnet-core \
   https://github.com/kskels/azure-cache-redis-samples.git
+```
 
 # s2i
+```bash
 oc new-build --name aspnet-core-app \
   --context-dir quickstart/aspnet-core/ContosoTeamStats \
   openshift/dotnet:5.0-ubi8~https://github.com/kskels/azure-cache-redis-samples.git
+```
 
 # binary
+```bash
 oc new-build --binary --strategy docker --name aspnet-core-app 
 oc start-build aspnet-core-app --from-dir .
 
 oc new-app --name aspnet-core-app --image-stream aspnet-core-app
 oc expose service aspnet-core-app
+```
 
 
 # deploy to prod
-
+```bash
 oc new-project dotnet-apps-prod
 oc policy add-role-to-user -n dotnet-apps-dev \
   system:image-puller \
@@ -35,3 +42,4 @@ oc new-app --name aspnet-core-redis --docker-image=registry.redhat.io/rhel8/redi
 oc tag dotnet-apps-dev/aspnet-core-app:latest aspnet-core-app:v1.0
 oc new-app --name aspnet-core-app --image-stream aspnet-core-app:v1.0
 oc expose service aspnet-core-app
+```
