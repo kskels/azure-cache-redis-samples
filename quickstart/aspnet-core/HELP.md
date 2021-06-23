@@ -43,3 +43,17 @@ oc tag dotnet-apps-dev/aspnet-core-app:latest aspnet-core-app:v1.0
 oc new-app --name aspnet-core-app --image-stream aspnet-core-app:v1.0
 oc expose service aspnet-core-app
 ```
+
+# autoscale
+```bash
+oc autoscale --name aspnet-core-hpa \
+  --min 1 \
+  --max 10 \
+  --cpu-percent 75 \
+  deploy/aspnet-core-app
+
+oc apply -f deploy/base/aspnet-core-hpa.yaml
+
+# load generation
+hey -n 200000 -c 10 https://aspnet-core-app-dotnet-apps-dev.apps.ocp4.kskels.com/Home/RedisCache
+```

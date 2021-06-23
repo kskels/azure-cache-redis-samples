@@ -1,0 +1,42 @@
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: aspnet-core-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: aspnet-core-app
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          averageUtilization: 50
+          type: Utilization
+
+  # See more details at
+  # https://docs.openshift.com/container-platform/4.7/nodes/pods/nodes-pods-autoscaling.html
+  behavior:
+    scaleDown: 
+      policies: 
+      - type: Pods 
+        value: 4 
+        periodSeconds: 6
+      - type: Percent
+        value: 10 
+        periodSeconds: 6
+      selectPolicy: Min 
+      stabilizationWindowSeconds: 12
+    scaleUp: 
+      policies:
+      - type: Pods
+        value: 5 
+        periodSeconds: 7
+      - type: Percent
+        value: 12
+        periodSeconds: 8
+      selectPolicy: Max
+      stabilizationWindowSeconds: 0
