@@ -5,7 +5,7 @@ metadata:
     app: aspnet-core-app
   name: aspnet-core-app
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: aspnet-core-app
